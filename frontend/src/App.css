@@ -1,0 +1,43 @@
+animate-section {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  
+  .animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .perspective {
+    perspective: 1000px;
+  }
+  
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+  
+  .-rotate-y-3 {
+    transform: rotateY(-3deg);
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius:          10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #9CA3AF;
+  }
