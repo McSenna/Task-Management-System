@@ -112,6 +112,21 @@ switch($action) {
         handleTaskStatusRequest();
         break;
 
+    case 'get_notifications':
+        include './data/notifications.php';
+        get_notifications();
+        break;
+
+    case 'mark_notification_read':
+        include './data/notifications.php';
+        mark_notification_read();
+        break;
+
+    case 'mark_all_notifications_read':
+        include './data/notifications.php';
+        mark_all_notifications_read();
+        break;
+
     default:
         $res = [
             'type' => 'error',

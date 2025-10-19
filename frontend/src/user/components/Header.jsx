@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Menu, Bell } from 'lucide-react';
+import { ChevronDown, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import NotificationBell from './NotificationBell';
+import { api } from '../../services/api';
 
-const Header = ({ toggleSidebar }) => {
+const Header = ({ toggleSidebar, notifications = [], unread = 0, onMarkRead, onMarkAllRead, onOpenProfile }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userData, setUserData] = useState({
     name: '',
@@ -38,20 +39,12 @@ const Header = ({ toggleSidebar }) => {
 
   const fetchUserData = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
-      
       const sessionId = localStorage.getItem('session_id') || sessionStorage.getItem('session_id');
-      if (!sessionId) {
-        console.warn('No active session found');
-        return;
-      }
-  
-      const response = await axios.get(`${apiUrl}get_session_user`, {
-        withCredentials: true,
-      });
-  
-      if (response.data.type === 'success') {
-        const user = response.data.user;
+      if (!sessionId) return;
+
+      const response = await api.getSessionUser();
+      if (response.type === 'success') {
+        const user = response.user;
         setUserData({
           name: user.username || '',
           email: user.email || ''
@@ -85,6 +78,10 @@ const Header = ({ toggleSidebar }) => {
 
   const navigateToProfile = () => {
     setIsDropdownOpen(false);
+    if (onOpenProfile) {
+      onOpenProfile(userData);
+      return;
+    }
     navigate('/user-layout/profile');
   };
 
@@ -119,10 +116,12 @@ const Header = ({ toggleSidebar }) => {
 
         <div className="flex items-center space-x-4">
           {/* Notifications */}
-          <button className="p-1 rounded-full text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-            <span className="sr-only">View notifications</span>
-            <Bell size={20} />
-          </button>
+          <NotificationBell
+            notifications={notifications}
+            unread={unread}
+            onMarkRead={onMarkRead}
+            onMarkAllRead={onMarkAllRead}
+          />
 
           <div className="relative dropdown-container">
             <button

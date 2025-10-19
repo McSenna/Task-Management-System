@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import useNotifications from './hooks/useNotifications';
+import ToastNotifications from './components/ToastNotifications';
+import ProfileModal from './components/ProfileModal';
 
 const UserLayout = () => {
   const savedSidebarState = localStorage.getItem('sidebarExpanded');
@@ -9,6 +12,10 @@ const UserLayout = () => {
     savedSidebarState !== null ? JSON.parse(savedSidebarState) : true
   );
   const [isMobile, setIsMobile] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [profileUser, setProfileUser] = useState(null);
+
+  const { notifications, unread, markRead, markAllRead, toasts, removeToast } = useNotifications(20000);
 
   const toggleSidebar = () => {
     const newState = !sidebarExpanded;
@@ -41,7 +48,14 @@ const UserLayout = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="sticky top-0 z-20">
-        <Header toggleSidebar={toggleSidebar} />
+        <Header 
+          toggleSidebar={toggleSidebar}
+          notifications={notifications}
+          unread={unread}
+          onMarkRead={markRead}
+          onMarkAllRead={markAllRead}
+          onOpenProfile={(user) => { setProfileUser(user); setProfileOpen(true); }}
+        />
       </div>
       
       <div className="flex flex-grow relative">
@@ -81,6 +95,9 @@ const UserLayout = () => {
           }}
         />
       )}
+      
+      <ToastNotifications toasts={toasts} onClose={removeToast} />
+      <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} user={profileUser} />
     </div>
   );
 };
